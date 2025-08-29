@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Beautiful Community Comments</title>
+    <!-- Tailwind CSS CDN for modern styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* General body styling for a dark, modern theme */
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #1a202c;
+            /* Dark background */
+            color: #e2e8f0;
+            /* Light text */
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+        /* Container for the input, button, and comment section */
+        
+        .input-button-container {
+            width: 90%;
+            max-width: 500px;
+            background-color: #2d3748;
+            /* Slightly lighter dark background */
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            margin-bottom: 20px;
+        }
+        /* Styling for the comment input field */
+        
+        .input1 {
+            width: 100%;
+            padding: 12px 16px;
+            margin-bottom: 15px;
+            border: 1px solid #4a5568;
+            /* Darker border */
+            border-radius: 8px;
+            background-color: #2d3748;
+            /* Dark input background */
+            color: #e2e8f0;
+            font-size: 16px;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .input1::placeholder {
+            color: #a0aec0;
+        }
+        
+        .input1:focus {
+            outline: none;
+            border-color: #63b3ed;
+            /* Blue focus border */
+            box-shadow: 0 0 0 3px rgba(99, 179, 237, 0.5);
+        }
+        /* Styling for the submit button */
+        
+        .button1 {
+            width: 100%;
+            padding: 12px 16px;
+            background-color: #667eea;
+            /* Purple button */
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+        }
+        
+        .button1:hover {
+            background-color: #5a67d8;
+            /* Darker purple on hover */
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+        }
+        
+        .button1:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        /* Styling for the main comment display section */
+        
+        .comment-section {
+            width: 90%;
+            max-width: 500px;
+            background-color: #2d3748;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            min-height: 100px;
+            /* Ensure space for comments */
+            border: 1px solid #4a5568;
+            margin-top: 20px;
+        }
+        /* Styling for individual comment cards (assuming JS adds this class) */
+        
+        .comment-card {
+            background-color: #4a5568;
+            /* Slightly lighter card background */
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            color: #e2e8f0;
+            font-size: 15px;
+            word-wrap: break-word;
+            /* Prevents long words from overflowing */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease;
+        }
+        
+        .comment-card:last-child {
+            margin-bottom: 0;
+        }
+        /* Styling for the "comments below" initial text */
+        
+        .comment-section>p {
+            color: #a0aec0;
+            text-align: center;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="input-button-container">
+        <input class="input1" placeholder="type your comment" />
+        <button class="button1">COMMENT</button>
+    </div>
+
+    <div class="comment-section">
+        <p>Comments will appear here.</p>
+    </div>
+
+
+    <script>
+        const button = document.querySelector(".button1")
+        const input = document.querySelector(".input1")
+        const cspace = document.querySelector(".comment-section")
+
+        button.addEventListener("click", sendData)
+
+        function sendData(event) {
+            event.preventDefault()
+
+            const commentValue = input.value;
+            input.value = "";
+
+            fetch('http://localhost:7777/', {
+                    method: "post",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        comment: commentValue
+                    })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    cspace.innerHTML = "";
+                    data.forEach(value => {
+                        const div = document.createElement("div");
+                        div.classList.add("comment-card");
+                        div.textContent = value;
+                        cspace.appendChild(div);
+                    });
+
+                })
+                .catch(err => console.error(err));
+        }
+    </script>
+</body>
+
+</html>
